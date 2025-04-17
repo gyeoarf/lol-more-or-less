@@ -41,27 +41,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Load real data from Netlify function
 async function loadOPGGData() {
-    try {
-        // Try Netlify function first
-        const response = await fetch('https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper');
-        if (!response.ok) throw new Error("Network error");
+    // Try Netlify function first
+    let data = await fetch('https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper')
+        .then(r => r.json())
+        .catch(() => null);
 
-        const data = await response.json();
-        if (!Array.isArray(data)) throw new Error("Invalid data");
-
-        // Transform into usable format
-        data.forEach(champ => {
-            championStats[champ.name] = {
-                winRate: champ.winRate,
-                pickRate: champ.pickRate,
-                banRate: champ.banRate,
-                kda: champ.kda
-            };
-        });
-    } catch (error) {
-        console.error("Failed to load OP.GG data:", error);
-        throw error; // Trigger fallback
+    // Fallback to static data if needed
+    if (!data || data.length === 0) {
+        data = await fetch('fallback-stats.json').then(r => r.json());
     }
+    return data;
 }
 
 // Fallback data
