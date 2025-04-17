@@ -28,18 +28,24 @@ const elements = {
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         await loadOPGGData();
+        if (Object.keys(championStats).length === 0) {
+            throw new Error("No data loaded");
+        }
         setupEventListeners();
         newRound();
     } catch (error) {
-        showError("Failed to load live stats. Try refreshing.");
-        console.error("Initialization error:", error);
+        showError("Live stats unavailable. Using sample data...");
+        loadFallbackData(); // Fallback to sample data
     }
 });
 
 // Load real data from Netlify function
 async function loadOPGGData() {
     try {
-        const response = await fetch('https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper');        if (!response.ok) throw new Error("Network error");
+        // Try Netlify function first
+        const response = await fetch('https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper');
+        if (!response.ok) throw new Error("Network error");
+
         const data = await response.json();
         if (!Array.isArray(data)) throw new Error("Invalid data");
 
@@ -53,9 +59,20 @@ async function loadOPGGData() {
             };
         });
     } catch (error) {
-        console.error("Data load failed:", error);
-        throw error;
+        console.error("Failed to load OP.GG data:", error);
+        throw error; // Trigger fallback
     }
+}
+
+// Fallback data
+function loadFallbackData() {
+    championStats = {
+        "Aatrox": { winRate: 50.1, pickRate: 8.2, banRate: 12.3, kda: 2.1 },
+        "Ahri": { winRate: 51.7, pickRate: 15.3, banRate: 5.4, kda: 2.8 },
+        "Zed": { winRate: 49.5, pickRate: 18.7, banRate: 25.1, kda: 2.5 }
+    };
+    setupEventListeners();
+    newRound();
 }
 
 // Game logic
