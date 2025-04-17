@@ -1,15 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Player Stats Mode</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="player-stats-mode">
 <div class="game-container">
   <h1>Player Stats Mode</h1>
   <p>Who has higher <span id="stat-display">Win Rate</span>?</p>
 
   <div class="champions">
     <div class="champion" id="champ1-container">
-      <img id="champ1-img" width="120">
+      <img id="champ1-img" alt="Champion 1">
       <p id="champ1-name"></p>
       <p class="stat-reveal" id="champ1-value"></p>
     </div>
     <div class="champion" id="champ2-container">
-      <img id="champ2-img" width="120">
+      <img id="champ2-img" alt="Champion 2">
       <p id="champ2-name"></p>
       <p class="stat-reveal" id="champ2-value"></p>
     </div>
@@ -18,3 +25,6 @@
   <p class="streak">Streak: <span id="streak">0</span></p>
   <a href="index.html" class="back-button">← Back to Modes</a>
 </div>
+<script src="js/player-stats.js"></script>
+</body>
+</html>

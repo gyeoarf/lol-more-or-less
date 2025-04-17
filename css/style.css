@@ -385,3 +385,41 @@ body {
         height: 110px;
     }
 }
+
+/* Player Stats Mode Specific */
+.player-stats-mode .game-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.player-stats-mode .champions {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 3rem 0;
+    flex-wrap: wrap;
+}
+
+.player-stats-mode .champion {
+    text-align: center;
+    width: 160px;
+}
+
+.player-stats-mode .champion img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--card-border);
+}
+
+.player-stats-mode .streak {
+    font-size: 1.3rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.player-stats-mode #streak {
+    color: var(--primary);
+    font-weight: bold;
+}
