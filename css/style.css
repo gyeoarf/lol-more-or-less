@@ -324,21 +324,28 @@ body {
     100% { transform: rotate(30deg) translate(30%, 30%); }
 }
 
-/* ===== STAT REVEAL ===== */
+/* Stat reveal styling */
 .stat-reveal {
-    display: block;
-    font-size: 0.9rem;
+    font-size: 0.9em;
     color: var(--text-secondary);
-    margin-top: 0.3rem;
+    margin-top: 0.3em;
     opacity: 0;
-    transform: translateY(5px);
-    transition: var(--transition);
+    transition: opacity 0.3s;
 }
 
 .show-stat .stat-reveal {
     opacity: 1;
-    transform: translateY(0);
 }
+
+/* Stat-specific colors */
+#stat-display {
+    color: var(--primary);
+}
+
+.winRate { color: #2ecc71; }  /* Green for win rate */
+.pickRate { color: #3498db; } /* Blue for pick rate */
+.banRate { color: #e74c3c; }  /* Red for ban rate */
+.kda { color: #f1c40f; }      /* Gold for KDA */
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
 @media (max-width: 768px) {

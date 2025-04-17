@@ -1,15 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Player Stats Mode</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
 <div class="game-container">
-  <h1>Player Stats Mode (Beta)</h1>
-  <p>Work in progress - check back soon!</p>
-  <a href="index.html">← Back to Modes</a>
+  <h1>Player Stats Mode</h1>
+  <p>Who has higher <span id="stat-display">Win Rate</span>?</p>
+
+  <div class="champions">
+    <div class="champion" id="champ1-container">
+      <img id="champ1-img" width="120">
+      <p id="champ1-name"></p>
+      <p class="stat-reveal" id="champ1-value"></p>
+    </div>
+    <div class="champion" id="champ2-container">
+      <img id="champ2-img" width="120">
+      <p id="champ2-name"></p>
+      <p class="stat-reveal" id="champ2-value"></p>
+    </div>
+  </div>
+
+  <p class="streak">Streak: <span id="streak">0</span></p>
+  <a href="index.html" class="back-button">← Back to Modes</a>
 </div>
-<a href="index.html" class="back-button">← Back to Modes</a>
-</body>
-</html>
