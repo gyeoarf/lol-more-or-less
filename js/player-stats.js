@@ -40,17 +40,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Load real data from Netlify function
-async function loadOPGGData() {
-    // Try Netlify function first
-    let data = await fetch('https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper')
-        .then(r => r.json())
-        .catch(() => null);
-
-    // Fallback to static data if needed
-    if (!data || data.length === 0) {
-        data = await fetch('fallback-stats.json').then(r => r.json());
+async function loadOPGGData(champ1, champ2) {
+    try {
+        const response = await fetch(
+            `https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper?champs=${champ1},${champ2}`
+        );
+        return await response.json();
+    } catch (error) {
+        console.error("Using fallback data:", error);
+        return [
+            { name: champ1, winRate: 50 + Math.random() * 5, pickRate: 5 + Math.random() * 15, kda: 2 + Math.random() * 3 },
+            { name: champ2, winRate: 50 + Math.random() * 5, pickRate: 5 + Math.random() * 15, kda: 2 + Math.random() * 3 }
+        ];
     }
-    return data;
 }
 
 // Fallback data
@@ -65,30 +67,63 @@ function loadFallbackData() {
 }
 
 // Game logic
-function newRound() {
-    resetUI();
+async function newRound() {
+    try {
+        // Reset UI state
+        resetUI();
 
-    // Pick random stat to compare
-    currentStat = STAT_TYPES[Math.floor(Math.random() * STAT_TYPES.length)];
-    updateStatDisplay();
+        // 1. Get two random champions
+        const allChampions = Object.keys(championStats).length > 0 ?
+            Object.keys(championStats) :
+            await getChampionListFromRiot();
 
-    // Get two champions with valid stats
-    const validChamps = Object.keys(championStats).filter(name =>
-        !isNaN(championStats[name][currentStat])
-    );
+        let champ1, champ2;
+        do {
+            champ1 = allChampions[Math.floor(Math.random() * allChampions.length)];
+            champ2 = allChampions[Math.floor(Math.random() * allChampions.length)];
+        } while (champ2 === champ1 && allChampions.length > 1);
 
-    if (validChamps.length < 2) throw new Error("Not enough data");
+        // 2. Load stats for these specific champions
+        const stats = await loadOPGGData(champ1, champ2);
 
-    let champ1, champ2;
-    do {
-        champ1 = validChamps[Math.floor(Math.random() * validChamps.length)];
-        champ2 = validChamps[Math.floor(Math.random() * validChamps.length)];
-    } while (champ2 === champ1);
+        // Update championStats with fresh data
+        stats.forEach(stat => {
+            championStats[stat.name] = {
+                winRate: stat.winRate,
+                pickRate: stat.pickRate,
+                banRate: stat.banRate,
+                kda: stat.kda
+            };
+        });
 
-    updateChampionUI('champ1', champ1);
-    updateChampionUI('champ2', champ2);
+        // 3. Select random stat to compare
+        currentStat = STAT_TYPES[Math.floor(Math.random() * STAT_TYPES.length)];
+        updateStatDisplay();
+
+        // 4. Update UI
+        updateChampionUI('champ1', champ1);
+        updateChampionUI('champ2', champ2);
+
+    } catch (error) {
+        console.error("Round initialization failed:", error);
+        showError("Failed to load champion data. Trying again...");
+        setTimeout(newRound, 2000); // Retry after delay
+    }
 }
 
+// Helper function to get champion list
+async function getChampionListFromRiot() {
+    try {
+        const response = await fetch(
+            'https://ddragon.leagueoflegends.com/cdn/15.8.1/data/en_US/champion.json'
+        );
+        const data = await response.json();
+        return Object.keys(data.data);
+    } catch (error) {
+        console.error("Failed to get champion list:", error);
+        return ["Aatrox", "Ahri", "Zed"]; // Fallback
+    }
+}
 // UI Updates
 function updateStatDisplay() {
     const DISPLAY_TEXTS = {
