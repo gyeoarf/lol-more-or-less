@@ -39,9 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load real data from Netlify function
 async function loadOPGGData() {
     try {
-        const response = await fetch('/.netlify/functions/opgg-scraper');
-        if (!response.ok) throw new Error("Network error");
-
+        const response = await fetch('https://lolmoreless.netlify.app/.netlify/functions/opgg-scraper');        if (!response.ok) throw new Error("Network error");
         const data = await response.json();
         if (!Array.isArray(data)) throw new Error("Invalid data");
 
