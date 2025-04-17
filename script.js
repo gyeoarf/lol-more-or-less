@@ -54,28 +54,40 @@ function getRandomChampion() {
 }
 
 function newRound() {
-    // Pick a random stat (HP, AD, or MS)
+    // 1. Pick a random stat (HP, AD, or MS)
     currentStat = possibleStats[Math.floor(Math.random() * possibleStats.length)];
-    statDisplay.textContent =
-        currentStat === 'hp' ? 'Health' :
-            currentStat === 'ad' ? 'Attack Damage' : 'Move Speed';
 
-    // Pick random champions
+    // 2. Map stat to display name
+    const statDisplayNames = {
+        hp: 'Health',
+        ad: 'Attack Damage',
+        ms: 'Move Speed'
+    };
+    document.getElementById('stat-display').textContent = statDisplayNames[currentStat];
+
+    // 3. Pick two unique random champions
     let champ1 = getRandomChampion();
     let champ2 = getRandomChampion();
-    while (champ2 === champ1) champ2 = getRandomChampion();
+    while (champ2 === champ1) {
+        champ2 = getRandomChampion(); // Ensure different champions
+    }
 
-    // Update UI
-    champ1Name.textContent = champ1;
-    champ2Name.textContent = champ2;
-    champ1Img.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ1.replace(/\s+/g, '')}.png`;
-    champ2Img.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ2.replace(/\s+/g, '')}.png`;
+    // 4. Update UI
+    document.getElementById('champ1-name').textContent = champ1;
+    document.getElementById('champ2-name').textContent = champ2;
 
-    // Reset animations
-    document.getElementById('champ1-container').classList.remove('correct');
-    document.getElementById('champ2-container').classList.remove('correct');
+    // 5. Load champion images (handle names with spaces like "Dr. Mundo")
+    const formattedChamp1 = champ1.replace(/\s+/g, ''); // Remove spaces
+    const formattedChamp2 = champ2.replace(/\s+/g, '');
+    document.getElementById('champ1-img').src =
+        `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${formattedChamp1}.png`;
+    document.getElementById('champ2-img').src =
+        `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${formattedChamp2}.png`;
+
+    // 6. Reset visual feedback
+    document.getElementById('champ1-container').classList.remove('correct', 'wrong');
+    document.getElementById('champ2-container').classList.remove('correct', 'wrong');
 }
-
 function checkAnswer(selectedChamp) {
     const champ1 = champ1Name.textContent;
     const champ2 = champ2Name.textContent;
