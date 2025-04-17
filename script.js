@@ -1,48 +1,32 @@
 let champions = {};
 let currentStat = 'hp';
 let streak = 0;
+let version = '14.10.1'; // Update to latest patch
 
-// 1. Define all functions FIRST
-function getRandomChampion() {
-    const keys = Object.keys(champions);
-    return keys[Math.floor(Math.random() * keys.length)];
-}
+// DOM Elements
+const statDisplay = document.getElementById('stat-display');
+const champ1Img = document.getElementById('champ1-img');
+const champ1Name = document.getElementById('champ1-name');
+const champ2Img = document.getElementById('champ2-img');
+const champ2Name = document.getElementById('champ2-name');
+const streakDisplay = document.getElementById('streak');
 
-function newRound() {
-    let champ1 = getRandomChampion();
-    let champ2 = getRandomChampion();
-    while (champ2 === champ1) champ2 = getRandomChampion(); // Avoid duplicates
+// Initialize game
+document.addEventListener('DOMContentLoaded', () => {
+    fetchChampionData();
+    document.getElementById('champ1-container').addEventListener('click', () => checkAnswer(champ1Name.textContent));
+    document.getElementById('champ2-container').addEventListener('click', () => checkAnswer(champ2Name.textContent));
+});
 
-    document.getElementById('champ1').textContent = champ1;
-    document.getElementById('champ2').textContent = champ2;
-    document.getElementById('stat').textContent = `Base ${currentStat.toUpperCase()}`;
-}
-
-function checkAnswer(selectedChamp) {
-    const champ1 = document.getElementById('champ1').textContent;
-    const champ2 = document.getElementById('champ2').textContent;
-    const correctChamp = champions[champ1][currentStat] > champions[champ2][currentStat] ? champ1 : champ2;
-
-    if (selectedChamp === correctChamp) {
-        streak++;
-        document.getElementById('streak').textContent = streak;
-        newRound();
-    } else {
-        alert(`Game Over! Streak: ${streak}`);
-        streak = 0;
-    }
-}
-
-// 2. Fetch data AFTER functions are defined
+// Fetch champion data
 async function fetchChampionData() {
     try {
-        const version = '14.10.1'; // Update to latest patch
         const response = await fetch(
             `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
         );
         const data = await response.json();
 
-        // Parse Riot's data format
+        // Parse data
         for (const champId in data.data) {
             const champ = data.data[champId];
             champions[champ.name] = {
@@ -53,20 +37,55 @@ async function fetchChampionData() {
         }
 
         console.log("Data loaded:", champions);
-        newRound(); // Now safe to call
+        newRound();
     } catch (error) {
-        console.error("Error details:", error);
-        alert("Error loading champion data. Check console for details!");
+        console.error("Error:", error);
+        alert("Error loading data. Check console for details.");
     }
 }
 
-// 3. Initialize event listeners AFTER DOM loads
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('champ1').addEventListener('click', () =>
-        checkAnswer(document.getElementById('champ1').textContent)
-    );
-    document.getElementById('champ2').addEventListener('click', () =>
-        checkAnswer(document.getElementById('champ2').textContent)
-    );
-    fetchChampionData(); // Start the game
-});
+// Game logic
+function getRandomChampion() {
+    const keys = Object.keys(champions);
+    return keys[Math.floor(Math.random() * keys.length)];
+}
+
+function newRound() {
+    let champ1 = getRandomChampion();
+    let champ2 = getRandomChampion();
+    while (champ2 === champ1) champ2 = getRandomChampion();
+
+    // Update UI
+    champ1Name.textContent = champ1;
+    champ2Name.textContent = champ2;
+    champ1Img.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ1.replace(/\s+/g, '')}.png`;
+    champ2Img.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ2.replace(/\s+/g, '')}.png`;
+
+    // Reset animations
+    document.getElementById('champ1-container').classList.remove('correct');
+    document.getElementById('champ2-container').classList.remove('correct');
+}
+
+function setStat(stat) {
+    currentStat = stat;
+    statDisplay.textContent = `Base ${stat.toUpperCase()}`;
+    newRound();
+}
+
+function checkAnswer(selectedChamp) {
+    const champ1 = champ1Name.textContent;
+    const champ2 = champ2Name.textContent;
+    const correctChamp = champions[champ1][currentStat] > champions[champ2][currentStat] ? champ1 : champ2;
+
+    if (selectedChamp === correctChamp) {
+        streak++;
+        streakDisplay.textContent = streak;
+        document.getElementById(selectedChamp === champ1 ? 'champ1-container' : 'champ2-container').classList.add('correct');
+        setTimeout(newRound, 1000);
+    } else {
+        alert(`Game Over! Streak: ${streak}`);
+        streak = 0;
+        streakDisplay.textContent = streak;
+        newRound();
+    }
+}

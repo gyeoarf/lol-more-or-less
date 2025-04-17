@@ -5,14 +5,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="game">
+<div class="game-container">
     <h1>Guess the Stat!</h1>
-    <p>Who has higher <span id="stat">Base HP</span>?</p>
-    <div class="champions">
-        <button id="champ1" class="champion">Champion 1</button>
-        <button id="champ2" class="champion">Champion 2</button>
+    <p>Who has higher <span id="stat-display">Base HP</span>?</p>
+
+    <div class="stats-selector">
+        <button onclick="setStat('hp')">Health</button>
+        <button onclick="setStat('ad')">Attack Damage</button>
+        <button onclick="setStat('ms')">Move Speed</button>
     </div>
-    <p>Streak: <span id="streak">0</span></p>
+
+    <div class="champions">
+        <div class="champion" id="champ1-container">
+            <img id="champ1-img" width="120">
+            <p id="champ1-name"></p>
+        </div>
+        <div class="champion" id="champ2-container">
+            <img id="champ2-img" width="120">
+            <p id="champ2-name"></p>
+        </div>
+    </div>
+
+    <p class="streak">Streak: <span id="streak">0</span></p>
 </div>
 <script src="script.js"></script>
 </body>
