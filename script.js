@@ -88,20 +88,37 @@ function newRound() {
     document.getElementById('champ1-container').classList.remove('correct', 'wrong');
     document.getElementById('champ2-container').classList.remove('correct', 'wrong');
 }
+
 function checkAnswer(selectedChamp) {
     const champ1 = champ1Name.textContent;
     const champ2 = champ2Name.textContent;
-    const correctChamp = champions[champ1][currentStat] > champions[champ2][currentStat] ? champ1 : champ2;
+    const statName = document.getElementById('stat-display').textContent;
+    const champ1Value = champions[champ1][currentStat];
+    const champ2Value = champions[champ2][currentStat];
 
-    if (selectedChamp === correctChamp) {
+    // Handle equal values (any answer is correct)
+    const isEqual = champ1Value === champ2Value;
+    const correctChamp = isEqual ? selectedChamp :
+        (champ1Value > champ2Value ? champ1 : champ2);
+
+    // Display both stats temporarily
+    champ1Name.textContent = `${champ1}: ${champ1Value}`;
+    champ2Name.textContent = `${champ2}: ${champ2Value}`;
+
+    if (selectedChamp === correctChamp || isEqual) {
         streak++;
         streakDisplay.textContent = streak;
-        document.getElementById(selectedChamp === champ1 ? 'champ1-container' : 'champ2-container').classList.add('correct');
-        setTimeout(newRound, 1000); // Auto-advance after 1 second
+        document.getElementById(selectedChamp === champ1 ? 'champ1-container' : 'champ2-container')
+            .classList.add('correct');
     } else {
-        alert(`Game Over! Streak: ${streak}\nCorrect answer: ${correctChamp} (${statDisplay.textContent}: ${champions[correctChamp][currentStat]})`);
         streak = 0;
         streakDisplay.textContent = streak;
-        newRound();
+        document.getElementById(selectedChamp === champ1 ? 'champ1-container' : 'champ2-container')
+            .classList.add('wrong');
     }
+
+    // Reset UI after 2 seconds
+    setTimeout(() => {
+        newRound();
+    }, 2000);
 }
