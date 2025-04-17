@@ -1,0 +1,26 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background: #f0f0f0;
+}
+.champions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+}
+.champion {
+    padding: 15px 25px;
+    font-size: 18px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+.champion:hover {
+    background: #45a049;
+}
+#streak {
+    font-weight: bold;
+}
