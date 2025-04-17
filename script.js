@@ -1,7 +1,7 @@
 let champions = {};
 let currentStat = '';
 let streak = 0;
-let version = '14.10.1'; // Update to latest patch
+let version = '15.8.1'; // Update to latest patch
 
 // Stats to randomize
 const possibleStats = ['hp', 'ad', 'ms']; // Health, Attack Damage, Move Speed
