@@ -1,4 +1,4 @@
-const { scrapeChampionStats } = require('../../opgg-scraper');
+const { scrapeChampionStats } = require('../../site-scraper.js');
 
 exports.handler = async function(event, context) {
     const { champion } = event.queryStringParameters;
