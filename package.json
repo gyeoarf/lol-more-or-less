@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "description": "",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
