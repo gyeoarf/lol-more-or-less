@@ -274,8 +274,13 @@ body {
     border-radius: 50%;
     border: 3px solid var(--card-border);
     object-fit: cover;
-    transition: var(--transition);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    background: var(--card-bg);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23f1c40f"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="14">?</text></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30%;
 }
 
 .champion p {
@@ -422,4 +427,15 @@ body {
 .player-stats-mode #streak {
     color: var(--primary);
     font-weight: bold;
+}
+
+.champion img.loading {
+    opacity: 0.5;
+    filter: blur(1px);
+}
+
+.champion img.error-state {
+    border-color: var(--accent) !important;
+    filter: grayscale(100%);
+    opacity: 0.7;
 }

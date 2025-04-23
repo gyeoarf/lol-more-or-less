@@ -55,7 +55,7 @@ function startGame() {
     newRound(currentChampion, opponent);
 }
 
-function newRound(champ1, champ2) {
+async function newRound(champ1, champ2) {
     currentStat = possibleStats[Math.floor(Math.random() * possibleStats.length)];
 
     const displayNames = {
@@ -69,14 +69,15 @@ function newRound(champ1, champ2) {
     champ1Name.textContent = champ1;
     champ2Name.textContent = champ2;
 
-    const f1 = champ1.replace(/\s+/g, '');
-    const f2 = champ2.replace(/\s+/g, '');
-    champ1Img.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${f1}.png`;
-    champ2Img.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${f2}.png`;
+    // Load images using our new image loader
+    await imageLoader.loadImage(champ1, champ1Img);
+    await imageLoader.loadImage(champ2, champ2Img);
 
     // Reset styles
     ['champ1-container', 'champ2-container'].forEach(id => {
-        document.getElementById(id).classList.remove('correct', 'wrong');
+        const el = document.getElementById(id);
+        el.classList.remove('correct', 'wrong');
+        el.style.pointerEvents = 'auto';
     });
 }
 
@@ -97,7 +98,11 @@ function checkAnswer(selectedChamp) {
     }
 
     const selectedContainer = selectedChamp === champ1 ? 'champ1-container' : 'champ2-container';
-    const wrongContainer = selectedChamp !== correctChamp ? selectedContainer : null;
+    const otherContainer = selectedChamp === champ1 ? 'champ2-container' : 'champ1-container';
+
+    // Update names to show stat values
+    champ1Name.textContent = `${champ1} (${val1})`;
+    champ2Name.textContent = `${champ2} (${val2})`;
 
     if (selectedChamp === correctChamp || isEqual) {
         streak++;
@@ -108,11 +113,76 @@ function checkAnswer(selectedChamp) {
         streak = 0;
         streakDisplay.textContent = streak;
         document.getElementById(selectedContainer).classList.add('wrong');
-        currentChampion = correctChamp; // Still advance
+        document.getElementById(otherContainer).classList.add('correct');
+        currentChampion = correctChamp;
     }
 
+    // Disable further clicks during the reveal period
+    document.getElementById('champ1-container').style.pointerEvents = 'none';
+    document.getElementById('champ2-container').style.pointerEvents = 'none';
+
     setTimeout(() => {
+        // Restore original names without values
+        champ1Name.textContent = champ1;
+        champ2Name.textContent = champ2;
+
+        // Re-enable clicks
+        document.getElementById('champ1-container').style.pointerEvents = 'auto';
+        document.getElementById('champ2-container').style.pointerEvents = 'auto';
+
+        // Move to next round
         const nextChallenger = getRandomChampion(currentChampion);
         newRound(currentChampion, nextChallenger);
     }, 2000);
 }
+
+// Add this near the top of your full-random.js (with other constants)
+const imageLoader = {
+    cache: {},
+
+    async loadImage(championName, imgElement) {
+        const formattedName = championName.replace(/\s+/g, '');
+        const cacheKey = `${version}_${formattedName}`;
+
+        // 1. Check cache first
+        if (this.cache[cacheKey]?.status === 'loaded') {
+            imgElement.src = this.cache[cacheKey].url;
+            imgElement.classList.remove('loading', 'error-state');
+            return;
+        }
+
+        // 2. Set loading state
+        imgElement.classList.add('loading');
+        imgElement.src = '';
+
+        try {
+            // 3. Try to load from CDN
+            const url = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${formattedName}.png`;
+
+            // Test load using Image object
+            const loaded = await new Promise((resolve) => {
+                const testImg = new Image();
+                testImg.onload = () => resolve(true);
+                testImg.onerror = () => resolve(false);
+                testImg.src = url;
+            });
+
+            if (loaded) {
+                // 4. Success - update DOM and cache
+                imgElement.src = url;
+                imgElement.classList.remove('loading', 'error-state');
+                this.cache[cacheKey] = { status: 'loaded', url };
+            } else {
+                // 5. CDN failed
+                throw new Error('Image failed to load');
+            }
+        } catch (error) {
+            // 6. Handle errors
+            console.warn(`Image load failed for ${championName}:`, error);
+            imgElement.src = '';
+            imgElement.classList.remove('loading');
+            imgElement.classList.add('error-state');
+            this.cache[cacheKey] = { status: 'failed' };
+        }
+    }
+};
