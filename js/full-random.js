@@ -4,7 +4,7 @@ let streak = 0;
 let version = '15.8.1'; // Update to latest patch
 
 // Stats to randomize
-const possibleStats = ['hp', 'ad', 'ms']; // Health, Attack Damage, Move Speed
+const possibleStats = ['hp', 'ad', 'ms', 'range'];
 
 // DOM Elements
 const statDisplay = document.getElementById('stat-display');
@@ -35,7 +35,8 @@ async function fetchChampionData() {
             champions[champ.name] = {
                 hp: champ.stats.hp,
                 ad: champ.stats.attackdamage,
-                ms: champ.stats.movespeed
+                ms: champ.stats.movespeed,
+                range: champ.stats.attackrange
             };
         }
 
@@ -61,7 +62,8 @@ function newRound() {
     const statDisplayNames = {
         hp: 'Health',
         ad: 'Attack Damage',
-        ms: 'Move Speed'
+        ms: 'Move Speed',
+        range: 'Attack Range'
     };
     document.getElementById('stat-display').textContent = statDisplayNames[currentStat];
 
