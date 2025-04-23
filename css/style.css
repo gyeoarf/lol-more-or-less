@@ -1,5 +1,50 @@
-/* ===== GLOBAL STYLES ===== */
+/* ============================================ */
+/* ============== TABLE OF CONTENTS =========== */
+/* ============================================ */
+/*
+1. GLOBAL STYLES
+  1.1 Variables
+  1.2 Base styles
+  1.3 Fonts
+
+2. MODE SELECTION SCREEN (index.html)
+  2.1 Container
+  2.2 Header
+  2.3 Mode cards
+  2.4 Badges
+
+3. GAME SCREEN (shared by all modes)
+  3.1 Container
+  3.2 Header
+  3.3 Back button
+
+4. CHAMPION COMPARISON COMPONENTS
+  4.1 Champion grid
+  4.2 Champion cards
+  4.3 Champion states
+
+5. FEEDBACK STATES
+  5.1 Correct/Wrong/Equal
+  5.2 Loading/Error states
+
+6. ANIMATIONS
+
+7. RESPONSIVE ADJUSTMENTS
+  7.1 Tablet (768px)
+  7.2 Mobile (480px)
+
+8. MODE-SPECIFIC OVERRIDES
+  8.1 Player Stats mode
+*/
+
+
+/* ============================================ */
+/* ============= 1. GLOBAL STYLES ============= */
+/* ============================================ */
+
+/* 1.1 Variables */
 :root {
+    /* Color palette */
     --primary: #f1c40f; /* League gold */
     --secondary: #1a1a2e; /* Dark navy */
     --accent: #e74c3c; /* Red for errors */
@@ -8,9 +53,12 @@
     --text-secondary: #95a5a6;
     --card-bg: #16213e;
     --card-border: #1f2b4d;
+
+    /* Effects */
     --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* 1.2 Base styles */
 * {
     margin: 0;
     padding: 0;
@@ -26,6 +74,7 @@ body {
     background-image: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 60%);
 }
 
+/* 1.3 Fonts */
 @font-face {
     font-family: 'Beaufort for LoL';
     src: url('https://fonts.cdnfonts.com/css/beaufortforlol') format('woff2');
@@ -33,7 +82,12 @@ body {
     font-style: normal;
 }
 
-/* ===== MODE SELECTOR (index.html) ===== */
+
+/* ============================================ */
+/* ==== 2. MODE SELECTION SCREEN (index.html) == */
+/* ============================================ */
+
+/* 2.1 Container */
 .mode-selector {
     max-width: 1200px;
     margin: 0 auto;
@@ -41,6 +95,7 @@ body {
     animation: fadeIn 0.8s ease-out;
 }
 
+/* 2.2 Header */
 .header {
     text-align: center;
     margin-bottom: 3rem;
@@ -61,6 +116,7 @@ body {
     margin: 0 auto;
 }
 
+/* 2.3 Mode cards */
 .modes {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -87,6 +143,7 @@ body {
     overflow: hidden;
 }
 
+/* Gold shine effect on hover */
 .mode-card::before {
     content: '';
     position: absolute;
@@ -131,6 +188,22 @@ body {
     z-index: 1;
 }
 
+/* 2.4 Badges */
+.badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--accent);
+    color: white;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Coming soon state */
 .coming-soon {
     position: relative;
     cursor: not-allowed;
@@ -148,20 +221,6 @@ body {
     border-radius: 10px;
 }
 
-.badge {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: var(--accent);
-    color: white;
-    padding: 0.35rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
 .coming-soon .badge {
     background: #3498db;
     right: 50%;
@@ -170,7 +229,12 @@ body {
     bottom: -10px;
 }
 
-/* ===== GAME CONTAINER (Shared by all modes) ===== */
+
+/* ============================================ */
+/* ==== 3. GAME SCREEN (shared by all modes) === */
+/* ============================================ */
+
+/* 3.1 Container */
 .game-container {
     max-width: 800px;
     margin: 0 auto;
@@ -178,6 +242,7 @@ body {
     animation: fadeIn 0.8s ease-out;
 }
 
+/* 3.2 Header */
 .game-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -212,6 +277,7 @@ body {
     font-size: 1.5rem;
 }
 
+/* 3.3 Back button */
 .back-button {
     display: inline-flex;
     align-items: center;
@@ -231,7 +297,12 @@ body {
     transform: translateX(-4px);
 }
 
-/* ===== CHAMPION CARDS ===== */
+
+/* ============================================ */
+/* ==== 4. CHAMPION COMPARISON COMPONENTS ===== */
+/* ============================================ */
+
+/* 4.1 Champion grid */
 .champions {
     display: flex;
     justify-content: center;
@@ -240,13 +311,18 @@ body {
     flex-wrap: wrap;
 }
 
+/* 4.2 Champion cards */
 .champion {
     cursor: pointer;
     transition: var(--transition);
     width: 160px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* Gold underline animation */
 .champion::after {
     content: '';
     position: absolute;
@@ -277,6 +353,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     background: var(--card-bg);
+    /* Fallback question mark */
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23f1c40f"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="14">?</text></svg>');
     background-repeat: no-repeat;
     background-position: center;
@@ -291,7 +368,31 @@ body {
     min-height: 2.2rem;
 }
 
-/* ===== FEEDBACK STATES ===== */
+/* 4.3 Champion states */
+.stat-reveal {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-top: 0.3em;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.show-stat .stat-reveal {
+    opacity: 1;
+}
+
+/* Stat-specific colors */
+.winRate { color: #2ecc71; }  /* Green for win rate */
+.pickRate { color: #3498db; } /* Blue for pick rate */
+.banRate { color: #e74c3c; }  /* Red for ban rate */
+.kda { color: #f1c40f; }      /* Gold for KDA */
+
+
+/* ============================================ */
+/* ============ 5. FEEDBACK STATES ============ */
+/* ============================================ */
+
+/* 5.1 Correct/Wrong/Equal */
 .correct {
     border-color: var(--correct) !important;
     animation: pulse 0.6s;
@@ -306,7 +407,23 @@ body {
     border-color: #3498db !important;
 }
 
-/* ===== ANIMATIONS ===== */
+/* 5.2 Loading/Error states */
+.champion img.loading {
+    opacity: 0.5;
+    filter: blur(1px);
+}
+
+.champion img.error-state {
+    border-color: var(--accent) !important;
+    filter: grayscale(100%);
+    opacity: 0.7;
+}
+
+
+/* ============================================ */
+/* ============== 6. ANIMATIONS =============== */
+/* ============================================ */
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -329,30 +446,12 @@ body {
     100% { transform: rotate(30deg) translate(30%, 30%); }
 }
 
-/* Stat reveal styling */
-.stat-reveal {
-    font-size: 0.9em;
-    color: var(--text-secondary);
-    margin-top: 0.3em;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
 
-.show-stat .stat-reveal {
-    opacity: 1;
-}
+/* ============================================ */
+/* ========= 7. RESPONSIVE ADJUSTMENTS ======== */
+/* ============================================ */
 
-/* Stat-specific colors */
-#stat-display {
-    color: var(--primary);
-}
-
-.winRate { color: #2ecc71; }  /* Green for win rate */
-.pickRate { color: #3498db; } /* Blue for pick rate */
-.banRate { color: #e74c3c; }  /* Red for ban rate */
-.kda { color: #f1c40f; }      /* Gold for KDA */
-
-/* ===== RESPONSIVE ADJUSTMENTS ===== */
+/* 7.1 Tablet (768px) */
 @media (max-width: 768px) {
     .header h1 {
         font-size: 2.2rem;
@@ -372,6 +471,7 @@ body {
     }
 }
 
+/* 7.2 Mobile (480px) */
 @media (max-width: 480px) {
     .game-header h1 {
         font-size: 1.8rem;
@@ -391,7 +491,12 @@ body {
     }
 }
 
-/* Player Stats Mode Specific */
+
+/* ============================================ */
+/* ====== 8. MODE-SPECIFIC OVERRIDES ========= */
+/* ============================================ */
+
+/* 8.1 Player Stats mode */
 .player-stats-mode .game-container {
     padding: 2rem;
     max-width: 800px;
@@ -427,15 +532,4 @@ body {
 .player-stats-mode #streak {
     color: var(--primary);
     font-weight: bold;
-}
-
-.champion img.loading {
-    opacity: 0.5;
-    filter: blur(1px);
-}
-
-.champion img.error-state {
-    border-color: var(--accent) !important;
-    filter: grayscale(100%);
-    opacity: 0.7;
 }
