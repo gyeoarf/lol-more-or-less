@@ -3,12 +3,14 @@
 // ===== CONSTANTS =====
 const VERSION = '15.8.1';
 const CACHE_KEY = `lol-champs-${VERSION}`;
-const possibleStats = ['hp', 'attackdamage', 'movespeed', 'attackrange']; // Using exact API property names
+const possibleStats = ['hp', 'attackdamage', 'movespeed', 'attackrange', 'attackspeed'];
+
 const statDisplayNames = {
     hp: 'Health',
     attackdamage: 'Attack Damage',
     movespeed: 'Move Speed',
-    attackrange: 'Attack Range'
+    attackrange: 'Attack Range',
+    attackspeed: 'Attack Speed'
 };
 
 // ===== GAME STATE =====
@@ -69,20 +71,41 @@ function startGame() {
 
 async function newRound(champ1, champ2) {
     currentStat = possibleStats[Math.floor(Math.random() * possibleStats.length)];
-    statDisplay.textContent = statDisplayNames[currentStat];
+
+    const statIconMap = {
+        hp: 'hp.png',
+        attackdamage: 'ad.png',
+        movespeed: 'ms.png',
+        attackrange: 'range.png',
+        attackspeed: 'as.png'
+    };
+
+    const statColorMap = {
+        hp: '#2ecc71',           // Green
+        attackdamage: '#e67e22', // Orange
+        movespeed: '#ecf0f1',    // White (default)
+        attackrange: '#ffffff',  // White
+        attackspeed: '#ffa500'   // Orangish
+    };
+
+    const iconFile = statIconMap[currentStat];
+    const color = statColorMap[currentStat];
+    const label = statDisplayNames[currentStat];
+
+    statDisplay.innerHTML = `<img src="data/${iconFile}" alt="${currentStat}" style="width: 20px; vertical-align: middle; margin-right: 6px;"> <span style="color:${color}">${label}</span>`;
 
     champ1Name.textContent = champ1;
     champ2Name.textContent = champ2;
 
-    // Load images
     champ1Img.src = `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${champ1.replace(/\s+/g, '')}.png`;
     champ2Img.src = `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${champ2.replace(/\s+/g, '')}.png`;
 
-    // Reset UI
     ['champ1-container', 'champ2-container'].forEach(id => {
         document.getElementById(id).classList.remove('correct', 'wrong');
     });
 }
+
+
 
 function checkAnswer(selectedChamp) {
     const champ1 = champ1Name.textContent;
@@ -122,7 +145,7 @@ function checkAnswer(selectedChamp) {
         currentChampion = correctChamp;
         const nextChallenger = getRandomChampion(currentChampion);
         newRound(currentChampion, nextChallenger);
-    }, 2000);
+    }, 800);
 }
 
 // ===== INITIALIZATION =====
