@@ -13,11 +13,32 @@ const statDisplayNames = {
     attackspeed: 'Attack Speed'
 };
 
+// ===== Google login =====
+let currentUser = null;
+const loginBtn = document.getElementById('login-btn');
+const userInfo = document.getElementById('user-info');
+
+loginBtn.addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then(result => {
+            currentUser = result.user;
+            userInfo.textContent = `Welcome, ${currentUser.displayName}`;
+            loginBtn.style.display = 'none';
+            fetchUserStreak();
+        })
+        .catch(err => {
+            console.error("Login error", err);
+            alert("Login failed. Try again.");
+        });
+});
+
 // ===== GAME STATE =====
 let champions = {};
 let currentStat = '';
 let streak = 0;
 let currentChampion = null;
+
 
 // ===== DOM ELEMENTS =====
 const statDisplay = document.getElementById('stat-display');
@@ -139,6 +160,15 @@ function checkAnswer(selectedChamp) {
     // Update streak
     streak = selectedChamp === correctChamp ? streak + 1 : 0;
     streakDisplay.textContent = streak;
+    if (currentUser && streak > (currentUser.highestStreak || 0)) {
+        currentUser.highestStreak = streak;
+        firebase.firestore().collection('users').doc(currentUser.uid).set({
+            highestStreak: streak
+        }, { merge: true });
+
+        const el = document.getElementById('highest');
+        if (el) el.textContent = streak;
+    }
 
     // Next round
     setTimeout(() => {
@@ -170,3 +200,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert("Failed to load game data. Please check console for details.");
     }
 });
+
+// ===== Firebase Auth Integration =====
+
+function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then(result => {
+            currentUser = result.user;
+            fetchUserStreak();
+        })
+        .catch(error => {
+            console.error("Login failed:", error);
+            alert("Failed to login with Google.");
+        });
+}
+
+async function fetchUserStreak() {
+    const ref = firebase.firestore().collection('users').doc(currentUser.uid);
+    const doc = await ref.get();
+    if (doc.exists) {
+        currentUser.highestStreak = doc.data().highestStreak || 0;
+    } else {
+        currentUser.highestStreak = 0;
+    }
+    const el = document.getElementById('highest');
+    if (el) el.textContent = currentUser.highestStreak;
+}

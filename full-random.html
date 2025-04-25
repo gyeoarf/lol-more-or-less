@@ -5,6 +5,16 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+<!-- Google login button -->
+<div class="top-bar">
+    <div class="user-actions">
+        <span id="user-info"></span>
+        <button id="login-btn">Login with Google</button>
+    </div>
+</div>
+
+<!-- Game container -->
 <div class="game-container">
     <h1>Guess the Stat!</h1>
     <p>Who has higher <span id="stat-display">?</span>?</p>
@@ -20,9 +30,31 @@
         </div>
     </div>
 
-    <p class="streak">Streak: <span id="streak">0</span></p>
+    <p class="streak">
+        Streak: <span id="streak">0</span> | Best: <span id="highest">0</span>
+    </p>
 </div>
 <a href="index.html" class="back-button">← Back to Modes</a>
+
+<!-- Firebase SDKs for plain HTML (compat versions) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBiFBXWbFfSD-f1o9Ew91HrK31JjMErik4",
+        authDomain: "lolmoreless.firebaseapp.com",
+        projectId: "lolmoreless",
+        storageBucket: "lolmoreless.firebasestorage.app",
+        messagingSenderId: "110780586806",
+        appId: "1:110780586806:web:e8c3083af4b1ccfb4ef197",
+        measurementId: "G-QVMHLKJDSE"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+</script>
+
 <script type="module" src="js/full-random.js"></script>
 </body>
 </html>

@@ -34,7 +34,7 @@
   7.2 Mobile (480px)
 
 8. MODE-SPECIFIC OVERRIDES
-  8.1 Player Stats mode
+  8.1 Mode 1: Classic and login button
 */
 
 
@@ -501,3 +501,36 @@ body {
 /* ====== 8. MODE-SPECIFIC OVERRIDES ========= */
 /* ============================================ */
 
+/* 8.1 Mode 1: Classic and login button */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    background: rgba(22, 33, 62, 0.6);
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#login-btn {
+    background-color: #f1c40f;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    color: #1a1a2e;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+#login-btn:hover {
+    background-color: #ffdd57;
+}
+
+#user-info {
+    color: #ecf0f1;
+    font-weight: bold;
+}
